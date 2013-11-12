@@ -1,0 +1,50 @@
+{
+  "name": "cola.next-json-patch",
+  "version": "0.2.4",
+  "description": "An application created with cujoJS! http://github.com/cujojs/seed.",
+  "keywords": [
+    "modules",
+    "ioc",
+    "promises",
+    "aop",
+    "rest",
+    "cujo",
+    "cujojs"
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/mit-license.php"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/cujojs/quickstart"
+    }
+  ],
+  "maintainers": [
+    {
+      "name": "Brian Cavalier",
+      "web": "http://hovercraftstudios.com"
+    },
+    {
+      "name": "John Hann",
+      "web": "http://unscriptable.com"
+    }
+  ],
+  "dependencies": {
+    "when": "~2.6",
+    "express": "~3.4"
+  },
+  "devDependencies": {
+    "bower": ""
+  },
+  "scripts": {
+    "postinstall": "bower install",
+    "start": "bin/server"
+  },
+  "ignore": [
+    "lib/"
+  ]
+}
