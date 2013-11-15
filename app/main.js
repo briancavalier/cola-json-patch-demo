@@ -7,6 +7,7 @@ define(function(require) {
 	var role = require('wire/query/role');
 	var dom = require('wire/dom');
 	var Rest = require('cola/data/Rest');
+	var ArrayStorage = require('cola/data/Array');
 	var TodoController = require('./TodoController');
 	var validate = require('cola/data/validate');
 	var mediate = require('cola/mediate');
@@ -21,6 +22,8 @@ define(function(require) {
 	var config = fluent(function(config) {
 		config
 			.add('todos@model', function() {
+				// Use an in-memory array (no http requests, no persistence)
+//				return new ArrayStorage();
 				// Use regular http patch
 //				return new Rest('todos', { patch: true });
 				// Use JSON Patch
@@ -104,7 +107,7 @@ define(function(require) {
 				on('submit', todoFormNode, function(e) {
 					e.preventDefault();
 					when(todoController.create(todoForm.get(e)), commitIfOnline)
-						.done(todoFormNode.reset.bind(todoFormNode));
+						.done(todoForm.clear);
 				});
 
 				todoList.observe()
