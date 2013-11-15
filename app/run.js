@@ -11,7 +11,6 @@
 			most: { location: 'lib/most', main: 'most', config: cjsConfig },
 			rest: { location: 'lib/rest', main: 'rest' },
 			when: { location: 'lib/when', main: 'when' },
-			meld: { location: 'lib/meld', main: 'meld' },
 			poly: { location: 'lib/poly' }
 		},
 		preloads: ['poly/all']
