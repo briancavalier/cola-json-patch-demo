@@ -1,18 +1,17 @@
 {
-	"name": "my-awesome-cujoJS-app",
+	"name": "cola-next-demo",
+	"main": "app/main",
 	"version": "0.2.4",
 	"dependencies": {
 		"curl": "~0.8",
-		"wire": "~0.10",
-		"cola": "~0.1",
+		"wire": "briancavalier/wire-next",
+		"cola": "cujojs/cola#master",
 		"when": "~2",
-		"meld": "~1",
 		"poly": "~0.5",
 		"rest": "~0.9",
-		"msgs": "~0.3"
+		"most": "~0"
 	},
 	"ignore": [
 		"node_modules/"
-
 	]
 }

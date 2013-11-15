@@ -2,14 +2,15 @@ define(function(require) {
 
 	var most = require('most');
 	var when = require('when');
-	var domReady = require('curl/domReady');
-
+	var fluent = require('wire/config/fluent');
+	var merge = require('wire/config/merge');
+	var role = require('wire/query/role');
+	var dom = require('wire/dom');
 	var Rest = require('cola/data/Rest');
 	var TodoController = require('./TodoController');
 	var validate = require('cola/data/validate');
 	var mediate = require('cola/mediate');
 	var transaction = require('cola/data/transaction');
-	var observe = require('cola/data/transaction/observe');
 	var queue = require('cola/lib/queue');
 	var reactiveCollection = require('cola/view/array');
 	var reactiveModel = require('cola/view/model');
@@ -17,23 +18,18 @@ define(function(require) {
 
 	var validateTodo = require('./validateTodo');
 
-	var fluent = require('wire/config/fluent');
-	var merge = require('wire/config/merge');
-	var role = require('wire/query/role');
-	var dom = require('wire/dom');
-
 	var config = fluent(function(config) {
 		config
-			.add('todos', function() {
+			.add('todos@model', function() {
 				// Use regular http patch
 //				return new Rest('todos', { patch: true });
 				// Use JSON Patch
 				return new Rest('todos', { jsonPatch: true });
 			})
 
-			.add('todoController', TodoController)
+			.add('todos@controller', TodoController)
 
-			.add('todoListNode', ['qs'], function(qs) {
+			.add('todos@view', ['qs'], function(qs) {
 				return qs('.todo-list');
 			})
 
@@ -41,26 +37,44 @@ define(function(require) {
 				return qs('.todo-form');
 			})
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			// Below this point, wire.next and cola.next should make most
 			// everything automatic, but we're not there yet, so there's
 			// lots of manual config for now.
-			.add('todoList', ['todoListNode', 'todos'], function(todoListNode, datasource) {
+			.add('todoList', ['@view', '@model'], function(todoListNode, todos) {
 				// TODO: This will eventually be hidden/automatic
 				return reactiveCollection(todoListNode, {
 					sectionName: 'todos',
 					sortBy: 'description',
 					binder: bindByAttr(),
-					metadata: datasource.metadata
+					metadata: todos.metadata
 				});
 			})
-			.add('todoForm', ['todoFormNode', 'todos'], function(todoFormNode, todos) {
+			.add('todoForm', ['todoFormNode', '@model'], function(todoFormNode, todos) {
 				// TODO: This will eventually be hidden/automatic
 				return reactiveModel(todoFormNode, {
 					binder: bindByAttr(),
 					proxy: todos.metadata.model
 				});
 			})
-			.add('todos@controller', ['todos', 'todoController', 'todoList'], mediate)
+			.add('todos@mediator', ['@model', '@controller', 'todoList'], mediate)
 			.add('@lifecycle', function() {
 				// TODO: This will eventually be hidden/automatic
 				// This lifecycle post-processor makes datasources transactional
@@ -83,7 +97,7 @@ define(function(require) {
 					}
 				}
 			})
-			.resolve(['qs', 'on', '@controller', 'todos', 'todoForm', 'todoFormNode', 'todoList', 'todoListNode'], function(qs, on, todoController, todos, todoForm, todoFormNode, todoList, todoListNode) {
+			.resolve(['qs', 'on', '@mediator', '@model', 'todoForm', 'todoFormNode', 'todoList', '@view'], function(qs, on, todoController, todos, todoForm, todoFormNode, todoList, todoListNode) {
 
 				// All of this is temporary gunk
 				// TODO: It will eventually be hidden by cola and/or wire
@@ -143,7 +157,7 @@ define(function(require) {
 					}
 
 					if(status.online && status.wasOffline) {
-						commitTransaction();
+						commitTransaction(true);
 					}
 				}
 
@@ -157,18 +171,8 @@ define(function(require) {
 					});
 				}
 
-				function commitTransaction() {
-					return todos.commit();
-				}
-
-				function preventDefault(e) {
-					e.preventDefault();
-				}
-
-				function targetHasClass(cls) {
-					return function(e) {
-						return e.target.classList.contains(cls);
-					};
+				function commitTransaction(refetch) {
+					return todos.commit(refetch);
 				}
 			});
 	});

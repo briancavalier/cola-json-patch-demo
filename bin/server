@@ -64,6 +64,7 @@ function withTodos(response, f) {
 function makeJsonRestEndpoint(app, baseUrl) {
 	app.get(baseUrl, function (request, response) {
 		withTodos(response, function(todos) {
+			console.log('GET', totalOps);
 			var arr = [];
 			for(var id in todos) {
 				arr.push(todos[id]);

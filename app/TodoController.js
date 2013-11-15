@@ -21,17 +21,6 @@ define(function() {
 			});
 		},
 
-		update: function(todos, todo) {
-			todos.some(function(t) {
-				if(t.id === todo.id) {
-					console.log(t, todo);
-					t.completed = !t.completed;
-					console.log(t, todo);
-					return true;
-				}
-			});
-		},
-
 		completeAll: function(todos) {
 			return todos.map(function(todo) {
 				todo.completed = true;
